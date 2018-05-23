@@ -14,6 +14,7 @@
                     <textarea name="content" id="content" rows="10" class="form-control">{{ $post['content'] }}</textarea>
                 </div>
                 {{ csrf_field() }}
+                <input type="hidden" name="id" value="{{$postId}}">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
