@@ -23,8 +23,8 @@
         </tr>
         @foreach ($posts as $post)
             <tr>
-                <td>{{ $post['title'] }}</td>
-                <td><a href="{{ route('admin.edit', ['id' => array_search($post, $posts)]) }}">Edit</a></td>
+                <td>{{ $post->title }}</td>
+                <td><a href="{{ route('admin.edit', ['id' => $post->id]) }}">Edit</a> | <a href="{{ route('admin.delete', ['id' => $post->id]) }}">Delete</a></td>
             </tr>
         @endforeach
     </table>    

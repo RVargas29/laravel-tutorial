@@ -7,11 +7,11 @@
             <form action="{{ route('admin.update') }}" method="post">
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ $post['title'] }}">
+                    <input type="text" class="form-control" id="title" name="title" value="{{ $post->title }}">
                 </div>
                 <div class="form-group">
                     <label for="content">Content</label>
-                    <textarea name="content" id="content" rows="10" class="form-control">{{ $post['content'] }}</textarea>
+                    <textarea name="content" id="content" rows="10" class="form-control">{{ $post->content }}</textarea>
                 </div>
                 {{ csrf_field() }}
                 <input type="hidden" name="id" value="{{$postId}}">
