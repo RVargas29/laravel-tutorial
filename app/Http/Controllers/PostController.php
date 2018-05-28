@@ -7,6 +7,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Like;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -22,8 +23,16 @@ class PostController extends Controller
     }
 
     public function getPost($id) {
-        $post = Post::find($id);
+        //$post = Post::where('if', $id)->first(); Lazy loading, loads likes when needed in view.
+        $post = Post::where('if', $id)->with('likes')->first(); //Eager loading, loads the likes on the same query.
         return view('blog.post', ['post' => $post]);
+    }
+
+    public function getLikePost($id) {
+        $post = Post::find($id);
+        $like = new Like();
+        $post->likes()->save($like);
+        return redirect()->back();
     }
 
     public function getAdminCreate() {
@@ -64,6 +73,7 @@ class PostController extends Controller
 
     public function getAdminDelete($id) {
         $post = Post::find($id);
+        $post->likes()->delete();
         $post->delete();
         //Check soft deleting at: https://laravel.com/docs/5.6/eloquent#soft-deleting
         return redirect()->route('admin.index')->with('info', 'Post deleted successfully.');
