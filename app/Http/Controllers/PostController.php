@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\Like;
+use App\Tag;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -24,7 +25,7 @@ class PostController extends Controller
 
     public function getPost($id) {
         //$post = Post::where('if', $id)->first(); Lazy loading, loads likes when needed in view.
-        $post = Post::where('if', $id)->with('likes')->first(); //Eager loading, loads the likes on the same query.
+        $post = Post::where('id', $id)->with('likes')->first(); //Eager loading, loads the likes on the same query.
         return view('blog.post', ['post' => $post]);
     }
 
@@ -36,13 +37,15 @@ class PostController extends Controller
     }
 
     public function getAdminCreate() {
-        return view('admin.create');
+        $tags = Tag::all();
+        return view('admin.create', ['tags' =>$tags]);
     }
 
     public function getAdminEdit($id) {
+        $tags = Tag::all();
         //$post = Post::find($id);
         $post = Post::where('id', '=', $id)->first();
-        return view('admin.edit', ['post' => $post, 'postId' => $id]);
+        return view('admin.edit', ['post' => $post, 'postId' => $id, 'tags' =>$tags]);
     }
 
     public function postAdminCreate(Request $request) {
@@ -54,7 +57,8 @@ class PostController extends Controller
             'title' => $request->input('title'),
             'content' => $request->input('content')
         ]);
-        $post->save();         
+        $post->save(); 
+        $post->tags()->attach($request->input('tags') === null ? [] : $request->input('tags'));      
 
         return redirect()->route('admin.index')->with('info', 'Post created with title: ' . $request->input('title'));
     }
@@ -68,12 +72,16 @@ class PostController extends Controller
         $post->title = $request->input('title');
         $post->content = $request->input('content');
         $post->save();
+        //$post->tags()->detach();
+        //$post->tags()->attach($request->input('tags') === null ? [] : $request->input('tags'));
+        $post->tags()->sync($request->input('tags') === null ? [] : $request->input('tags')); 
         return redirect()->route('admin.index')->with('info', 'Post with title: ' . $request->input('title') . 'edited successfully.');
     }
 
     public function getAdminDelete($id) {
         $post = Post::find($id);
         $post->likes()->delete();
+        $post->tags()->detach();
         $post->delete();
         //Check soft deleting at: https://laravel.com/docs/5.6/eloquent#soft-deleting
         return redirect()->route('admin.index')->with('info', 'Post deleted successfully.');
