@@ -1,0 +1,17 @@
+@import url(https://fonts.googleapis.com/css?family=Ubuntu);
+@import url(https://fonts.googleapis.com/css?family=Frijole);
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.quote {
+    font: 400 72px "Frijole", cursive;
+    color: #F4645F;
+    text-align: center;
+}
+
+.post-title {
+    color: #F4645F;
+    font-weight: bolder;
+}
